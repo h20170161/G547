@@ -9,10 +9,10 @@ int first_module_init(void)
 
 }
 
-int first_module_exit(void)
+void first_module_exit(void)
 {
    printk(KERN_ALERT"Leaving this world \n \n");
-   return 0;
+   
 }
 
 module_init(first_module_init);
