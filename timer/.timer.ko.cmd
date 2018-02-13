@@ -1,0 +1,1 @@
+cmd_/home/nikhil/Desktop/timer/timer.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/nikhil/Desktop/timer/timer.ko /home/nikhil/Desktop/timer/timer.o /home/nikhil/Desktop/timer/timer.mod.o ;  true

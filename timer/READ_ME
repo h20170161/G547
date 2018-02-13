@@ -1,0 +1,5 @@
+ 1. I stored the value 1194(in hexadecimal) which will divide the main frequency and provide the delay of 1ms.
+ 2. I have used channel0 for reading / writing.
+ 3. I have used the rate generator mode of the PIT.
+ 4. I have used IOCTL for reading of current counter value.
+

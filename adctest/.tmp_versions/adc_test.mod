@@ -1,3 +1,3 @@
-/home/nikhil/adctest/adc_test.ko
-/home/nikhil/adctest/adc_test.o
+/home/nikhil/Desktop/G547/adctest/adc_test.ko
+/home/nikhil/Desktop/G547/adctest/adc_test.o
 
