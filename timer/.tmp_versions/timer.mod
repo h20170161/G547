@@ -1,3 +1,3 @@
-/home/nikhil/Desktop/timer/timer.ko
-/home/nikhil/Desktop/timer/timer.o
+/home/nikhil/Desktop/G547/timer/timer.ko
+/home/nikhil/Desktop/G547/timer/timer.o
 

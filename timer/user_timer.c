@@ -13,7 +13,8 @@
 int main()
 {
         int fd;
-        unsigned long current_counter;
+       int value,option;
+        int current_counter;
  
         printf("\nOpening Driver\n");
         fd = open("/dev/timer0_device", O_RDWR);
@@ -21,10 +22,19 @@ int main()
                 printf("Cannot open device file...\n");
                 return 0;
         }
-
-     ioctl(fd, RD_VALUE, (int32_t*) &current_counter);
-        printf("current_counter value is %ld\n", current_counter);
-  
+   printf("\nchoose the option\n1. delay \n 2. current counter value \n");
+   scanf("%d",&option);
+ switch(option)
+  {
+   case 1: 
+            printf("how much delay do you want in ms ?\n");
+            scanf("%d" , &value);
+            ioctl(fd, WR_VALUE, (int32_t*) &value);
+             break;
+  case 2 :  ioctl(fd, RD_VALUE, (int32_t*) &current_counter);
+             printf("current_counter value is %d\n", current_counter);
+             break;
+}
        printf("Closing Driver\n");
         close(fd);
 }

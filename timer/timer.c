@@ -13,8 +13,13 @@
 #define WR_VALUE _IOW('a','a',int32_t*)
 #define RD_VALUE _IOR('a','b',int32_t*)
 
-#define LATCH  0x04ac 
+#define channel0 0x40
+#define channel1 0x41
+#define channel2 0x42
+#define command_register 0x43
+#define LATCH  1193
 unsigned int value, current_counter;
+int i, val;
 dev_t dev = 0;
 static struct class *timer0_class;
 static struct cdev timer0_cdev;
@@ -60,42 +65,49 @@ static ssize_t timer0_write(struct file *filp, const char __user *buf, size_t le
         return 0;
 }
 
-static long timer0_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+static int delay(void)
 {
+   outb_p(0x34,command_register);
+   outb_p(LATCH & 0xff,channel0);
+   outb_p(LATCH >> 8,channel0);
+ return 0;
+}
+static int read_current_value(void)
+{
+   outb_p(0x00, command_register);
+   current_counter = inb(channel0);
+   current_counter = current_counter|(inb(channel0)<<8);
+   return current_counter ;
+} 
+static long timer0_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{   
+   
          switch(cmd) {
-                case WR_VALUE:
+                case WR_VALUE:  i=0;
                         copy_from_user(&value ,(int32_t*) arg, sizeof(value));
                         printk(KERN_INFO "Value = %d\n", value);
-                        break;
-                case RD_VALUE:
-                        copy_to_user((int32_t*) arg, &current_counter, sizeof(current_counter)); 
+                       while(i<value)
+                    {
+                      current_counter = read_current_value();
+                     printk(KERN_INFO "current_counter_Value = %d\n", current_counter);
+                     if(current_counter == 1)
+                     {i++ ;
+                       }
+                       }  
+                      break;
+                case RD_VALUE:  val = read_current_value();
+                        copy_to_user((int32_t*) arg, &val, sizeof(val)); 
                         break;
      
         }
         return 0;
 }
 
-static int delay(void)
-{
-   outb_p(0x34,0x43);
-   outb_p(LATCH & 0xff ,0x40);
-   outb_p(LATCH >> 8, 0X40);
- return 0;
-}
-unsigned long read_current_value(void)
-{
-   outb_p(0x00, 0x43);
-   value = inw(0x40);
-   return value ;
-} 
+
 
 static int __init timer0_init(void)
 {
-     delay();
- 
-  current_counter = read_current_value();
-  printk(KERN_INFO "current counter value is %lu \n ",current_counter);
-
+   
 
         /*Allocating Major number*/
         if((alloc_chrdev_region(&dev, 0, 1, "timer0_Dev")) <0){
@@ -127,7 +139,8 @@ static int __init timer0_init(void)
             goto r_device;
         }
         printk(KERN_INFO "Device Driver Insert...Done!!!\n");
-      return 0;
+     
+   return 0;
 
 r_device:
         class_destroy(timer0_class);
